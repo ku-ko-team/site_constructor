@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SiteConstructor</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body ng-app="app" style="padding-top: 70px;">
+  	<div ng-include="'navbar/_navbar.html'"></div>
+    <ui-view></ui-view>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+<div ng-controller="NavbarCtrl">
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">Site Constructor</a>
+			</div>
+
+			<div class="nav navbar-nav navbar-right" ng-hide="signedIn()">
+				<button class="btn btn-default navbar-btn" ng-click="selectedAction = 'Log In'; authWindowOpen();">Log In</button>
+				<button class="btn btn-default navbar-btn" ng-click="selectedAction = 'Register'; authWindowOpen();">Register</button>
+			</div>
+
+			<div class="nav navbar-nav navbar-right" ng-show="signedIn()">
+				<span class="navbar-text">Hello, {{current_user.first_name}} {{current_user.last_name}}!</span>
+				<li><a title="Log Out" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span></a></li>
+			</div>
+		
+	</nav>
+</div>
