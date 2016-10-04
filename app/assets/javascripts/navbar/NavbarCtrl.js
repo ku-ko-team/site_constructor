@@ -1,8 +1,9 @@
-function NavbarCtrl($scope, $uibModal, Auth, $rootScope) {
+function NavbarCtrl($scope, $rootScope, $uibModal, Auth) {
+
 	$scope.signedIn = Auth.isAuthenticated;
 
 	$scope.authWindowOpen = function() {
-		var authWindow = $uibModal.open({
+		$uibModal.open({
 			animation: true,
 			templateUrl: 'auth_window/_authWindow.html',
 			controller: 'AuthWindowCtrl',
@@ -24,8 +25,9 @@ function NavbarCtrl($scope, $uibModal, Auth, $rootScope) {
 	$rootScope.$on('devise:logout', function (e, user){
 		$rootScope.current_user = {};
 	});
+	
 }
 
 angular
 	.module('app')
-	.controller('NavbarCtrl', NavbarCtrl)
+	.controller('NavbarCtrl', NavbarCtrl);

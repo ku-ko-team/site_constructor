@@ -1,0 +1,17 @@
+<div class="container">
+
+	<ui-view>
+		<div ng-include="'pages/_pages.html'"></div>
+	</ui-view>
+
+
+</div>
+</div>
+<div class="container text-center">
+	<div class="col-lg-10" ng-controller="PagesCtrl">
+		<button class="btn btn-default" ng-click="savePage()">Save page</button>
+	</div>
+	<div class="col-lg-10">
+		<button class="btn btn-success">Save site</button>
+	</div>
+</div>

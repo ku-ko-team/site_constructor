@@ -1,48 +1,48 @@
 <div ng-show="loginAction"> <!-- Log In -->
-  <div class="modal-header">
-    <button class="close" ng-click="closeAuthWindow()"><span class="glyphicon glyphicon-remove right"></span></button>
-    <h2 class="modal-title">Log In</h2>
-  </div>
+	<div class="modal-header">
+		<button class="close" ng-click="closeAuthWindow()"><span class="glyphicon glyphicon-remove right"></span></button>
+		<h2 class="modal-title">Log In</h2>
+	</div>
 
-  <form ng-submit="login()">
-    <div class="modal-body">
-      <input class="form-control" placeholder="Email" type="email" ng-model="user.email" required>
-      <input class="form-control" placeholder="Password" type="password" ng-model="user.password" required>
-    </div>
-    <div class="modal-footer">
-      <div class="pull-left">
-        <a href="/users/auth/twitter"><img src="/assets/logos/twitter.png" width="30" height="30"></a>
-        <a href="/users/auth/vkontakte"><img src="/assets/logos/vkontakte.png" width="30" height="30"></a>
-        <a href="/users/auth/facebook"><img src="/assets/logos/facebook.png" width="30" height="30"></a>
-      </div>
-      <button class="btn btn-default" type="submit">Log In</button>
-      <a ng-click="loginAction = false; registerAction = true">
-        Register
-      </a>
-    </div>
-  </form>
+	<form ng-submit="login()">
+		<div class="modal-body">
+			<input class="form-control" placeholder="Email" type="email" ng-model="user.email" required>
+			<input class="form-control" placeholder="Password" type="password" ng-model="user.password" required>
+		</div>
+		<div class="modal-footer">
+			<div class="pull-left">
+				<a href="/users/auth/twitter"><img src="/assets/logos/twitter.png" width="30" height="30"></a>
+				<a href="/users/auth/vkontakte"><img src="/assets/logos/vkontakte.png" width="30" height="30"></a>
+				<a href="/users/auth/facebook"><img src="/assets/logos/facebook.png" width="30" height="30"></a>
+			</div>
+			<button class="btn btn-default" type="submit">Log In</button>
+			<a ng-click="loginAction = false; registerAction = true">
+				Register
+			</a>
+		</div>
+	</form>
 </div>  <!-- /.Log In -->
 
 <div ng-show="registerAction"> <!-- Register -->
-  <div class="modal-header">
-    <button class="close" ng-click="closeAuthWindow()"><span class="glyphicon glyphicon-remove right"></span></button>
-    <h2 class="modal-title">Register</h2>
-  </div>
+	<div class="modal-header">
+		<button class="close" ng-click="closeAuthWindow()"><span class="glyphicon glyphicon-remove right"></span></button>
+		<h2 class="modal-title">Register</h2>
+	</div>
 
-  <form ng-submit="register()">
-    <div class="modal-body">
-      <input class="form-control" placeholder="First Name" ng-model="user.first_name" required>
-      <input class="form-control" placeholder="Last Name" ng-model="user.last_name" required>
-      <input class="form-control" placeholder="Email" type="email" ng-model="user.email" required>
-      <input class="form-control" placeholder="Password" type="password" ng-model="user.password" required>
-    </div>
-    <div class="modal-footer"> 
-      <button class="btn btn-default" type="submit">Register</button>
-      <a ng-click="loginAction = true; registerAction = false">
-        Log In
-      </a>
-    </div>
-  </form>
+	<form ng-submit="register()">
+		<div class="modal-body">
+			<input class="form-control" placeholder="First Name" ng-model="user.first_name" required>
+			<input class="form-control" placeholder="Last Name" ng-model="user.last_name" required>
+			<input class="form-control" placeholder="Email" type="email" ng-model="user.email" required>
+			<input class="form-control" placeholder="Password" type="password" ng-model="user.password" required>
+		</div>
+		<div class="modal-footer"> 
+			<button class="btn btn-default" type="submit">Register</button>
+			<a ng-click="loginAction = true; registerAction = false">
+				Log In
+			</a>
+		</div>
+	</form>
 </div> <!-- /.Register -->
 
 <div>

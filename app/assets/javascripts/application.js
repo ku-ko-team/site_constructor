@@ -12,11 +12,14 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery-ui
 //= require angular
 //= require angular-rails-templates
 //= require angular-ui-router
 //= require angular-animate
 //= require angular-bootstrap
 //= require AngularDevise
+//= require angular-drag-and-drop-lists
+//= require angular-dragdrop
 //= require turbolinks
 //= require_tree .

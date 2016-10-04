@@ -3,5 +3,9 @@ Rails.application.routes.draw do
 
 	root "application#home"
 
-	resources :sites, only: [:new, :create]
+	resources :sites
+	resources :pages
+
+	get '/sites/:id/pages', to: "pages#site_pages"
+	put '/sites/:site_id/pages/:page_id/change_page_position', to: "pages#change_page_position"
 end

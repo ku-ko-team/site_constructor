@@ -4,6 +4,8 @@ class CreatePages < ActiveRecord::Migration[5.0]
       t.string :name
       t.references :site, foreign_key: true
       t.integer :layout_id
+
+      t.timestamps
     end
   end
 end

@@ -1,4 +1,5 @@
 <div ng-controller="NavbarCtrl">
+
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 
@@ -12,9 +13,19 @@
 			</div>
 
 			<div class="nav navbar-nav navbar-right" ng-show="signedIn()">
-				<span class="navbar-text">Hello, {{current_user.first_name}} {{current_user.last_name}}!</span>
+				<span class="navbar-text" style="margin-right: 0;">Hello, {{current_user.first_name}} {{current_user.last_name}}!</span>
 				<li><a title="Log Out" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span></a></li>
 			</div>
-		
+
+			<form class="navbar-form navbar-right">
+				<div class="input-group">
+					<input class="form-control" type="text" placeholder="Search...">
+					<span class="input-group-btn">
+						<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+					</span>
+				</div>
+			</form>
+		</div>
 	</nav>
+
 </div>

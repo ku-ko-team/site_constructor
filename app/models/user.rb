@@ -2,8 +2,6 @@ class User < ApplicationRecord
 	has_many :sites
 	has_many :pages
 
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
 	devise :database_authenticatable, :registerable,
 			:recoverable, :rememberable, :trackable, :validatable,
 			:omniauthable
@@ -12,8 +10,8 @@ class User < ApplicationRecord
 
 	def self.from_omniauth(auth)
 		user = find_or_create_by(provider: auth.provider, uid: auth.uid);
-		# user.provider = auth.provider
-		# user.uid = auth.uid
+		user.provider = auth.provider
+		user.uid = auth.uid
 		user.first_name = auth.info.name.split(' ')[0]
 		user.last_name = auth.info.name.split(' ')[1]
 		user.save!

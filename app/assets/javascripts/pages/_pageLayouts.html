@@ -1,0 +1,12 @@
+<div class="modal-header">
+	<button class="close" ng-click="closePageLayoutsWindow()"><span class="glyphicon glyphicon-remove right"></span></button>
+	<h2 class="modal-title">Choose page layout</h2>
+</div>
+<div class="modal-body">
+	<form ng-submit="createPage(page)">
+		<input class="form-control" style="margin-bottom: 15px" placeholder="Page name" ng-model="page.name" required>
+		<img src="/assets/page_layouts/layout1.png" style="width: 250px; height: 220px; border-radius: 5px; margin-right: 10px;" ng-click="page.layout_id = 1;">
+		<img src="/assets/page_layouts/layout2.png" style="width: 250px; height: 220px; border-radius: 5px;" ng-click="page.layout_id = 2;">
+		<button class="btn btn-default center-block" style="margin-top: 15px;" type="submit" ng-show="page.layout_id">Add page</button>
+	</form>
+</div>

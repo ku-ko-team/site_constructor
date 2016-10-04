@@ -1,18 +1,29 @@
 angular
-	.module('app', ['ui.router', 'templates', 'ngAnimate', 'ui.bootstrap', 'Devise'])
+	.module('app', ['ui.router', 'templates', 'ngAnimate', 'ui.bootstrap', 'Devise', 'dndLists', 'ngDragDrop'])
 	.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 		$stateProvider
 
 			.state('main', {
 				url: '/main',
 				templateUrl: 'main/_main.html',
-				controller: 'MainCtrl'
+				controller: 'MainCtrl',
+				resolve: {
+					sitesPromise: ['sites', function(sites) {
+						return sites.getAll();
+					}]
+				}
 			})
 
-			.state('newSite', {
-				url: '/sites/new',
-				templateUrl: 'sites/_siteNew.html',
+			.state('siteEdit', {
+				url: '/sites/:site_id/edit',
+				templateUrl: 'sites/_siteEdit.html',
 				controller: 'SitesCtrl'
+			})
+
+			.state('siteEdit.pageEdit', {
+				url: '^/sites/:site_id/pages/:page_id/edit',
+				templateUrl: 'pages/_pageEdit.html',
+				controller: 'PagesCtrl'
 			});
 
 		$urlRouterProvider.otherwise('main');

@@ -1,0 +1,26 @@
+<style>
+	.dndDraggingSource {
+		display: none;
+	}
+
+	.dndPlaceholder {
+		display: block;
+		background-color: #ddd;
+		min-height: 42px;
+	}
+</style>
+
+
+<div class="col-md-2 right-block" ng-controller="PagesCtrl" ng-init="getSitePages()">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h4>Pages</h4>
+		</div>
+		<div class="panel-body">
+			<ul class="list-group" dnd-list="pages" dnd-drop="dropCallback(event, index, item)">
+				<a class="list-group-item" ng-repeat="page in pages" dnd-draggable="page" dnd-moved="pages.splice($index, 1);" dnd-effect-allowed="move" ui-sref="siteEdit.pageEdit({page_id: page.id})">{{page.name}}</a>
+			</ul>
+			<button class="btn btn-success btn-block" ng-click="openPageLayoutsWindow()">Add new page</button>
+		</div>
+	</div>
+</div>
