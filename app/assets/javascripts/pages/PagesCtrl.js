@@ -21,6 +21,41 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 		});
 	};
 
+
+	var preparePage = function() {
+		$(".on-page").each(function() {
+			$(this).draggable({
+				revert: 'invalid'
+			});
+			$(this).css({position: 'absolute'});
+		});
+		for (i = 1; i <= 4; i++) {
+			$("#block"+i).droppable({
+				accept: '.move-block',
+				tolerance: "fit",
+				drop: function(event, ui) {
+					if (!$(ui.draggable).hasClass("on-page")) {
+						$(ui.draggable).clone().addClass("on-page").appendTo(this);
+						$(".on-page").each(function() {
+							$(this).draggable({
+								revert: 'invalid'
+							});
+							$(this).css({position: 'absolute'});
+						});
+					}
+				}
+			});
+		}
+
+		$('#trash').droppable({
+			accept: '.on-page',
+			tolerance: 'pointer',
+			drop: function(event, ui) {
+				$(ui.draggable).remove();
+			}
+		})
+	}
+
 	$scope.getPage = function() {
 		pages.getPage($stateParams.page_id).success(function() {
 			$scope.page = pages.page;
@@ -28,29 +63,7 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 				switch ($scope.page.layout_id) {
 					case 1: 
 						document.getElementById("workspace").innerHTML = layout1;
-						$(".on-page").each(function() {
-							$(this).draggable({
-								revert: 'invalid'
-							});
-							$(this).css({position: 'absolute'});
-						});
-						for (i = 1; i <= 4; i++) {
-							$("#block"+i).droppable({
-								accept: '.move-block',
-								tolerance: "fit",
-								drop: function(event, ui) {
-									if (!$(ui.draggable).hasClass("on-page")) {
-										$(ui.draggable).clone().addClass("on-page").appendTo(this);
-										$(".on-page").each(function() {
-											$(this).draggable({
-												revert: 'invalid'
-											});
-											$(this).css({position: 'absolute'});
-										});
-									}
-								}
-							});
-						}
+						preparePage();
 						break;
 					case 2:
 						document.getElementById("workspace").innerHTML = "<div style='border: 10px dashed rgba(0,0,0,0.6);'><br><br><br><br><br><br></div><div style='display: flex; flex-direction: row; flex-wrap: nowrap;'><div style='flex: 1; border-right: 10px dashed rgba(0,0,0,0.6); border-left: 10px dashed rgba(0,0,0,0.6);'><br><br><br><br></div><div style='flex: 1; border-right: 10px dashed rgba(0,0,0,0.6);'><br><br><br><br></div><div style='flex: 1; border-right: 10px dashed rgba(0,0,0,0.6);'><br><br><br><br></div><div style='flex: 1; border-right: 10px dashed rgba(0,0,0,0.6);'><br><br><br><br></div></div><div style='display: flex; flex-direction: row; flex-wrap: nowrap;'><div style='border: 10px dashed rgba(0,0,0,0.5); border-right: 0; flex: 1;'><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div><div style='border: 10px dashed rgba(0,0,0,0.5); flex: 3;'><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div><div style='border: 10px dashed rgba(0,0,0,0.5); border-left: 0; flex: 1;'><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div></div>";
@@ -58,41 +71,12 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 				}
 			} else {
 				document.getElementById("workspace").innerHTML = $scope.page.html;
-				$(".on-page").each(function() {
-					$(this).draggable({
-						revert: 'invalid'
-					});
-					$(this).css({position: 'absolute'});
-				});
-				for (i = 1; i <= 4; i++) {
-					$("#block"+i).droppable({
-						accept: '.move-block',
-						tolerance: "fit",
-						drop: function(event, ui) {
-							if (!$(ui.draggable).hasClass("on-page")) {
-								$(ui.draggable).clone().addClass("on-page").appendTo(this);
-								$(".on-page").each(function() {
-									$(this).draggable({
-										revert: 'invalid'
-									});
-									$(this).css({position: 'absolute'});
-								});
-							}
-						}
-					});
-				}
+				preparePage();
 			};
-
-			$('#trash').droppable({
-				accept: '.on-page',
-				tolerance: 'pointer',
-				drop: function(event, ui) {
-					$(ui.draggable).remove();
-				}
-			})
 		});
 		return true;
 	};
+
 
 	$scope.savePage = function() {
 		pages.update({
@@ -117,11 +101,11 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 	layout1 =  "<div id='block1' style='border: 10px dashed rgba(0,0,0,0.6); padding: 0; height: 300px;'>" +
 				"</div>" +
 				"<div style='display: flex; flex-direction: row;'>"+
-					"<div id='block2' style='border: 10px dashed rgba(0,0,0,0.6); border-top: 0; height: 300px; flex: 1;'>" +
+					"<div id='block2' style='border: 10px dashed rgba(0,0,0,0.6); border-top: 0; height: 600px; flex: 1;'>" +
 					"</div>" +
-					"<div id='block3' style='border-bottom: 10px dashed rgba(0,0,0,0.6); height: 300px; flex: 1'>" +
+					"<div id='block3' style='border-bottom: 10px dashed rgba(0,0,0,0.6); height: 600px; flex: 1'>" +
 					"</div>" +
-					"<div id='block4' style='border: 10px dashed rgba(0,0,0,0.6); border-top: 0; height: 300px; flex: 1'>" +
+					"<div id='block4' style='border: 10px dashed rgba(0,0,0,0.6); border-top: 0; height: 600px; flex: 1'>" +
 					"</div>"+
 				"</div>";
 
