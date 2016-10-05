@@ -28,11 +28,29 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 				switch ($scope.page.layout_id) {
 					case 1: 
 						document.getElementById("workspace").innerHTML = layout1;
-						$("#block1").droppable({
-							drop: function(event, ui) {
-								$(this).append($(ui.draggable).clone());
-							}
+						$(".on-page").each(function() {
+							$(this).draggable({
+								revert: 'invalid'
+							});
+							$(this).css({position: 'absolute'});
 						});
+						for (i = 1; i <= 4; i++) {
+							$("#block"+i).droppable({
+								accept: '.move-block',
+								tolerance: "fit",
+								drop: function(event, ui) {
+									if (!$(ui.draggable).hasClass("on-page")) {
+										$(ui.draggable).clone().addClass("on-page").appendTo(this);
+										$(".on-page").each(function() {
+											$(this).draggable({
+												revert: 'invalid'
+											});
+											$(this).css({position: 'absolute'});
+										});
+									}
+								}
+							});
+						}
 						break;
 					case 2:
 						document.getElementById("workspace").innerHTML = "<div style='border: 10px dashed rgba(0,0,0,0.6);'><br><br><br><br><br><br></div><div style='display: flex; flex-direction: row; flex-wrap: nowrap;'><div style='flex: 1; border-right: 10px dashed rgba(0,0,0,0.6); border-left: 10px dashed rgba(0,0,0,0.6);'><br><br><br><br></div><div style='flex: 1; border-right: 10px dashed rgba(0,0,0,0.6);'><br><br><br><br></div><div style='flex: 1; border-right: 10px dashed rgba(0,0,0,0.6);'><br><br><br><br></div><div style='flex: 1; border-right: 10px dashed rgba(0,0,0,0.6);'><br><br><br><br></div></div><div style='display: flex; flex-direction: row; flex-wrap: nowrap;'><div style='border: 10px dashed rgba(0,0,0,0.5); border-right: 0; flex: 1;'><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div><div style='border: 10px dashed rgba(0,0,0,0.5); flex: 3;'><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div><div style='border: 10px dashed rgba(0,0,0,0.5); border-left: 0; flex: 1;'><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div></div>";
@@ -40,12 +58,38 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 				}
 			} else {
 				document.getElementById("workspace").innerHTML = $scope.page.html;
-				$("#block1").droppable({
-					drop: function(event, ui) {
-						$(this).append($(ui.draggable).clone());
-					}
+				$(".on-page").each(function() {
+					$(this).draggable({
+						revert: 'invalid'
+					});
+					$(this).css({position: 'absolute'});
 				});
+				for (i = 1; i <= 4; i++) {
+					$("#block"+i).droppable({
+						accept: '.move-block',
+						tolerance: "fit",
+						drop: function(event, ui) {
+							if (!$(ui.draggable).hasClass("on-page")) {
+								$(ui.draggable).clone().addClass("on-page").appendTo(this);
+								$(".on-page").each(function() {
+									$(this).draggable({
+										revert: 'invalid'
+									});
+									$(this).css({position: 'absolute'});
+								});
+							}
+						}
+					});
+				}
 			};
+
+			$('#trash').droppable({
+				accept: '.on-page',
+				tolerance: 'pointer',
+				drop: function(event, ui) {
+					$(ui.draggable).remove();
+				}
+			})
 		});
 		return true;
 	};
@@ -70,19 +114,34 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 
 
 
-	layout1 =  "<div id='block1' style='border: 10px dashed rgba(0,0,0,0.6); height: 300px;'>" +
+	layout1 =  "<div id='block1' style='border: 10px dashed rgba(0,0,0,0.6); padding: 0; height: 300px;'>" +
 				"</div>" +
-				"<div style='border: 10px dashed rgba(0,0,0,0.6); border-top: 0; display: flex; flex-direction: row; flex-wrap: nowrap;'>" +
-					"<div style='border-right: 10px dashed rgba(0,0,0,0.6); flex: 1;'>" +
-						"<br><br><br><br><br><br><br><br><br><br><br><br><br><br>" +
+				"<div style='display: flex; flex-direction: row;'>"+
+					"<div id='block2' style='border: 10px dashed rgba(0,0,0,0.6); border-top: 0; height: 300px; flex: 1;'>" +
 					"</div>" +
-					"<div style='border-right: 10px dashed rgba(0,0,0,0.6); flex: 1;'>" +
-						"<br><br><br><br><br><br><br><br><br><br><br><br><br><br>" +
+					"<div id='block3' style='border-bottom: 10px dashed rgba(0,0,0,0.6); height: 300px; flex: 1'>" +
 					"</div>" +
-					"<div style='flex: 1;'>" +
-						"<br><br><br><br><br><br><br><br><br><br><br><br><br><br>" +
-					"</div>" +
+					"<div id='block4' style='border: 10px dashed rgba(0,0,0,0.6); border-top: 0; height: 300px; flex: 1'>" +
+					"</div>"+
 				"</div>";
+
+
+
+	$(".move-block").scroll(function() {
+		$(this).trigger("mouseup");
+	})
+
+	// render entered text in real-time
+	$(".text-block").keyup(function() {
+		$(".text-block.col-lg-12").children(".move-block.thumbnail")[0].innerHTML = $scope.text;
+	})
+
+	$scope.clearTextArea = function() {
+		$("#text-block-input").val('');
+		$(".text-block.col-lg-12").children(".move-block.thumbnail")[0].innerHTML = '';
+	}
+	
+
 };
 
 angular
