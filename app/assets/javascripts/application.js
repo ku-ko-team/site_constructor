@@ -21,5 +21,10 @@
 //= require AngularDevise
 //= require angular-drag-and-drop-lists
 //= require angular-dragdrop
+//= require angular-markdown-directive
+//= require angular-sanitize
+//= require showdown
+//= require angular-markdown-directive/markdown.js
+//= require markitup
 //= require turbolinks
 //= require_tree .

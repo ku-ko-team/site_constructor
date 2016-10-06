@@ -12,6 +12,8 @@
  *
  *= require_tree .
  *= require_self
+ *= require markitup/skins/markitup/style
+ *= require markitup/sets/xbbcode/style
  */
  
  @import "bootstrap-sprockets";

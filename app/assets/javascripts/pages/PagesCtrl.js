@@ -54,6 +54,100 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 				$(ui.draggable).remove();
 			}
 		})
+
+		var markdownSettings, markdownTitle;
+		markdownSettings = {
+			markupSet: [
+				{
+					name: 'First Level Heading',
+					key: '1',
+					placeHolder: 'Your title here...',
+					closeWith: function(markItUp) {
+						return markdownTitle(markItUp, '=');
+					}
+      			}, {
+					name: 'Second Level Heading',
+					key: '2',
+					placeHolder: 'Your title here...',
+					closeWith: function(markItUp) {
+						return markdownTitle(markItUp, '-');
+					}
+				}, {
+					name: 'Heading 3',
+					key: '3',
+					openWith: '### ',
+					placeHolder: 'Your title here...'
+				}, {
+					name: 'Heading 4',
+					key: '4',
+					openWith: '#### ',
+					placeHolder: 'Your title here...'
+				}, {
+					name: 'Heading 5',
+					key: '5',
+					openWith: '##### ',
+					placeHolder: 'Your title here...'
+				}, {
+					name: 'Heading 6',
+					key: '6',
+					openWith: '###### ',
+					placeHolder: 'Your title here...'
+				}, {
+					separator: '---------------'
+				}, {
+					name: 'Quotes',
+					className: 'markItUpButton markItUpButton7',
+					openWith: '> '
+				}, {
+					separator: '---------------'
+				}, {
+					name: 'Bold',
+					className: 'markItUpButton markItUpButton8', 
+					key: 'B',
+					openWith: '**',
+					closeWith: '**'
+				}, {
+					name: 'Italic',
+					className: 'markItUpButton markItUpButton9',
+					key: 'I',
+					openWith: '_',
+					closeWith: '_'
+				}, {
+					separator: '---------------'
+				}, {
+					name: 'Bulleted List',
+					className: 'markItUpButton markItUpButton11',
+					openWith: '- '
+				}, {
+					name: 'Numeric List',
+					className: 'markItUpButton markItUpButton12',
+					openWith: function(markItUp) {
+						return markItUp.line + '. ';
+					}
+				}, {
+					separator: '---------------'
+				}, {
+					name: 'Link',
+					className: 'markItUpButton markItUpButton15',
+					key: 'L',
+					openWith: '[',
+					closeWith: ']([![Url:!:http://]!] "[![Title]!]")',
+					placeHolder: 'Your text to link here...'
+				}
+			]
+		};
+
+		markdownTitle = function(markItUp, char) {
+			var heading, i, j, n, ref;
+				heading = '';
+				n = $.trim(markItUp.selection || markItUp.placeHolder).length;
+				for (i = j = 0, ref = n; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
+					heading += char;
+				}
+				return '\n' + heading;
+		};
+
+		$('#text-block-input').markItUp(markdownSettings);
 	}
 
 	$scope.getPage = function() {
@@ -109,23 +203,17 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 					"</div>"+
 				"</div>";
 
-
-
-	$(".move-block").scroll(function() {
-		$(this).trigger("mouseup");
-	})
-
-	// render entered text in real-time
-	$(".text-block").keyup(function() {
-		$(".text-block.col-lg-12").children(".move-block.thumbnail")[0].innerHTML = $scope.text;
-	})
-
 	$scope.clearTextArea = function() {
 		$("#text-block-input").val('');
-		$(".text-block.col-lg-12").children(".move-block.thumbnail")[0].innerHTML = '';
+		$(".text-block").children(".move-block.thumbnail")[0].innerHTML = '';
+		$("#text-block-size-input").val('');
 	}
-	
 
+	$scope.setBlockSize = function() {
+		if ($scope.textBlockSize <= 900) {
+			$(".text-block").children(".move-block.thumbnail").css({width: $scope.textBlockSize+"px", "maxWidth": $scope.textBlockSize+"px"})
+		}
+	}
 };
 
 angular
