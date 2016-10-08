@@ -80,30 +80,34 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 
 						if ($(ui.draggable)[0].offsetHeight > $(this)[0].offsetHeight) {
 							if ($(ui.draggable)[0].offsetWidth > $(this)[0].offsetWidth) {
-								$(ui.draggable).clone().addClass("on-page").css({width : '99%', height: $(this)[0].offsetHeight - 10}).appendTo(this);
+								$(ui.draggable).clone().addClass("on-page").css({width: $(this)[0].offsetWidth - 10, height: $(this)[0].offsetHeight - 10, overflow: "scroll", "overflowX": "hidden"}).appendTo(this);
 								check = false;
 							} else {
-								$(ui.draggable).clone().addClass("on-page").css({height : '99%'}).appendTo(this);
+								$(ui.draggable).clone().addClass("on-page").css({height: $(this)[0].offsetHeight - 10, overflow: "scroll", "overflowX": "hidden"}).appendTo(this);
 								check = false;
 							}
 						} else if ($(ui.draggable)[0].offsetWidth > $(this)[0].offsetWidth) {
-							$(ui.draggable).clone().addClass("on-page").css({width : '99%', height: $(this)[0].offsetHeight - 10}).appendTo(this);
+							block = $(ui.draggable).clone().addClass("on-page").css({width : $(this)[0].offsetWidth - 10}).appendTo(this);
+							if (block[0].offsetHeight > $(this)[0].offsetHeight) {
+								block.css({overflow: "scroll", "overflowX": "hidden", height: $(this)[0].offsetHeight - 10});
+							}
 							check = false;
 						}
 						
-				
-						if ($(ui.draggable)[0].naturalWidth > $(this)[0].offsetWidth) {
-							if ($(ui.draggable)[0].naturalHeight > $(this)[0].offsetHeight) {
-								$(ui.draggable).clone().addClass("on-page").css({width: $(this)[0].offsetWidth - 10, height: $(this)[0].offsetHeight - 10}).appendTo(this);
+						$(this).css({position: 'relative'})
+						if ($(ui.draggable)[0].naturalHeight > $(this)[0].naturalHeight) {
+							if ($(ui.draggable)[0].naturalWidth > $(this)[0].offsetWidth) {
+								image = $(ui.draggable).clone().addClass("on-page").appendTo(this);
+								image.css({"maxWidth": '100%', "maxHeight": "100%"})
 								check = false;
 							} else {
 								console.log("width")
-								$(ui.draggable).clone().addClass("on-page").css({width: '99%'}).appendTo(this);
+								image = $(ui.draggable).clone().addClass("on-page").appendTo(this);
+								image.css({"maxWidth": '100%', "maxHeight": "100%"});
 								check = false;
 							}
-						} else if ($(ui.draggable)[0].naturalHeight > $(this)[0].offsetHeight) {
-							console.log("height")
-							$(ui.draggable).clone().addClass("on-page").css({height: $(this)[0].offsetHeight - 10}).appendTo(this);
+						} else if ($(ui.draggable)[0].naturalWidth > $(this)[0].offsetWidth) {
+							$(ui.draggable).clone().addClass("on-page").css({"maxWidth": '100%', "maxHeight": "100%"}).appendTo(this);
 							check = false;
 						} 
 						if (check == true) {
