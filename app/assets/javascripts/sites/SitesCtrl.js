@@ -1,5 +1,5 @@
-function SitesCtrl($scope, $stateParams, $uibModal) {
-	
+function SitesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, sites) {
+	$scope.site = sites.site;
 };
 
 

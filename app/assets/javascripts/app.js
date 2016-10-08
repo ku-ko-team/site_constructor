@@ -24,6 +24,24 @@ angular
 				url: '^/sites/:site_id/pages/:page_id/edit',
 				templateUrl: 'pages/_pageEdit.html',
 				controller: 'PagesCtrl'
+			})
+
+
+			.state('siteShow', {
+				url: '/sites/:site_id',
+				templateUrl: 'sites/_siteShow.html',
+				controller: 'SitesCtrl',
+				resolve: {
+					sitesPromise: ['sites', '$stateParams', function(sites, $stateParams) {
+						return sites.getSite($stateParams.site_id);
+					}]
+				}
+			})
+
+			.state('siteShow.pageShow', {
+				url: '^/sites/:site_id/pages/:page_id',
+				templateUrl: 'pages/_pageShow.html',
+				controller: 'PagesCtrl'
 			});
 
 		$urlRouterProvider.otherwise('main');

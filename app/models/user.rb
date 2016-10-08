@@ -1,6 +1,8 @@
 class User < ApplicationRecord
+	extend Enumerize
+	enumerize :role, in: [:user, :admin], default: :user
+
 	has_many :sites
-	has_many :pages
 
 	devise :database_authenticatable, :registerable,
 			:recoverable, :rememberable, :trackable, :validatable,

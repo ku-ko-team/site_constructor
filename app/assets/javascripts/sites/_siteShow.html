@@ -1,0 +1,29 @@
+<style>
+	h1, h2, h3, h4, h5 {
+		margin: 0;
+	}
+</style>
+
+<div class="container">
+
+	<div class="page-header col-lg-8 col-lg-offset-2">
+		<h1 style="margin-bottom: 10px;">{{site.name}}<small style="margin-left: 15px;"><i>by {{site.user.first_name}} {{site.user.last_name}}</i></small></h1>
+		<h4 style="margin-bottom: 10px;">Tags: &nbsp;<span class="label label-info">Info</span></h4>
+	</div>
+	<div class="col-lg-8 col-lg-offset-2">
+		<div class="well">
+			<h4 style="font-weight: bold; font-family: Helvetica;">Views:</h4>
+			<br>
+			<h4 style="font-weight: bold; font-family: Helvetica;">Rating:</h4>
+		</div>
+		<ul class="nav nav-tabs">
+			<li ng-repeat="page in site.pages | orderBy: 'position'" style="margin-right: 20px; margin-bottom: 20px;">
+				<h3><a ui-sref="siteShow.pageShow({page_id: page.id})" ng-class="active">{{page.name}}</a></h3>
+			</li>
+		</ul>
+
+	</div>
+
+	<ui-view>
+	</ui-view>
+</div>

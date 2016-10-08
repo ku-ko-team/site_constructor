@@ -9,7 +9,7 @@
 		max-width: 890px;
 		width: 96%;
 		background: none;
-		padding-left: 15px;
+		padding-left: 10px;
 		height: 210px;
 	}
 	#markItUpText-block-input {
@@ -28,20 +28,53 @@
 	h1, h2, h3, h4, h5 {
 		margin: 0;
 	}
+	blockquote {
+		margin: 0;
+	}
 </style>
 
-<div class="col-lg-10" id="workspace" ng-init="getPage()">
+<div class="col-lg-10" id="workspace" ng-init="getPage(); getSitePages();" style="display: inline-block;">
 </div>
 
 <div ng-include="'pages/_pages.html'"></div>
+<div class="col-md-2">
+	<div class="btn-group" style="width: 100%;" uib-dropdown>
+		<button type="button" style="width: 100%;" class="btn btn-default" uib-dropdown-toggle>
+			Add menu <span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" uib-dropdown-menu>
+			<li><a ng-click="addHorizontalMenu()">Horizontal</a></li>
+			<li><a ng-click="addVerticalMenu()">Vertical</a></li>
+			<li><a ng-click="removeMenu()">None</a></li>
+		</ul>
+	</div>
+</div>
+<div class="col-md-2">
+	<button id="remove-borders-btn" class="btn btn-default" style="margin-top: 10px; width: 100%; margin-bottom: 20px;">Remove borders</button>
+	<hr>
+</div>
+
+<div class="col-md-2">
+	<button ng-click="deleteElements()" class="btn btn-danger" style="width: 100%;">Delete elements</button>
+	<hr>
+</div>
+
+<div class="container text-center">
+	<div class="col-lg-2" ng-controller="PagesCtrl">
+		<button class="btn btn-default" style="width: 100%; margin-bottom: 10px;" ng-click="savePage()">Save page</button>
+	</div>
+	<div class="col-lg-2">
+		<button style="width: 100%" class="btn btn-success">Save site</button>
+	</div>
+</div>
 
 <div style="display: inline-block; margin-top: 20px;">
 
 
-		<div class="thumbnail" style=" display: inline-block; vertical-align: top; margin-right: 50px">
+		<div class="thumbnail" style="display: inline-block; vertical-align: top; margin-right: 50px">
 			<div class="text-block">
 				<div class="move-block thumbnail" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" jqyoui-draggable="{scroll: 'true'}" style="margin: 0; padding: 0; margin-bottom: 5px; cursor: all-scroll; border-width: 0; background-color: rgba(0,0,0,0); word-wrap: break-word; max-width: 500px;">
-					<div btf-markdown="text" style="padding: 0; margin: 0;"></div>
+					<div btf-markdown="text" style="padding: 0; margin: 0; display: inline-block;"></div>
 				</div>
 
 				<textarea id="text-block-input" class="form-control" style="cursor: text;" ng-model="text"></textarea>
@@ -58,10 +91,8 @@
 		</div>
 
 		<div style="display: inline-block; margin: 0; cursor: all-scroll; max-width: 200px;">
-			<div class="move-block thumbnail" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" jqyoui-draggable="{scroll: 'true'}">
-				<a>
-					<img id="image" src="http://placehold.it/150x150">
-				</a>
+			<div class="thumbnail">
+				<img class="move-block" data-drag="true" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" jqyoui-draggable="{scroll: 'true'}" src="assets/background.jpg">
 			</div>
 		</div>
 

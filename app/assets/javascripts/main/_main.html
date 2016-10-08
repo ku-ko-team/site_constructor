@@ -2,14 +2,11 @@
 	h3, h2, h1 {
 		margin: 0;
 	}
-
-
 </style>
 
 
 <div class="container">
-
-	<div class="col-lg-6 col-lg-offset-3 text-center" style="margin-bottom: 30px;">
+	<div ng-show="signedIn()" class="col-lg-6 col-lg-offset-3 text-center" style="margin-bottom: 30px;">
 		<form class="input-group" ng-submit="createSite()">
 			<input class="form-control" placeholder="Name" ng-model="name" required>
 			<span class="input-group-btn">
@@ -20,26 +17,17 @@
 
 	<div class="col-md-4" ng-repeat="site in sites">
 		<div class="panel panel-default">
-			<div class="panel-heading" ng-show="current_user.id == site.user_id" ><a ui-sref="siteEdit({site_id: site.id})"><h3>{{site.name}}</h3></a></div>
-			<div class="panel-heading" ng-hide="current_user.id == site.user_id"><h3>{{site.name}}</h3></div>
+			<div class="panel-heading" ng-show="showEditLink(site)">
+				<a ui-sref="siteShow({site_id: site.id})" style="display: inline-block;"><h3>{{site.name}}</h3></a>
+				<a ng-click="siteDestroy(site)" style="display: inline-block;" class="pull-right"><h3><span class="glyphicon glyphicon-trash" style="color: red;"></span></h3></a>
+				<a ui-sref="siteEdit({site_id: site.id})"  style="display: inline-block; margin-right: 10px;" class="pull-right"><h3><span class="glyphicon glyphicon-edit"></span></h3></a>
+			</div>
+			<div class="panel-heading" ng-hide="showEditLink(site)">
+				<a ui-sref="siteShow({site_id: site.id})" style="display: inline-block;"><h3>{{site.name}}</h3></a>
+			</div>
 			<div class="panel-body">
 				by {{site.user.first_name}} {{site.user.last_name}}
 			</div>
 		</div>
 	</div>
-
-
-<!-- PARALLAX LOL -->
-	<div class="col-md-4">
-		<div class="panel panel-default">
-			<div class="panel-heading"><h3>My site</h3></div>
-			<div class="panel-body" style="background: url(http://placehold.it/400x400) no-repeat center fixed; height: 250px; background-size: cover;">
-				by Nikita Kolokoltsev
-				<br>
-				Usual Blog
-			</div>
-		</div>
-	</div>
-	<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-
 </div>

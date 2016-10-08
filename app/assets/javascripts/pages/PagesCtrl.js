@@ -1,4 +1,5 @@
 function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, sites) {
+	var clicks = 1;
 
 	$scope.openPageLayoutsWindow = function() {
 		$uibModal.open({
@@ -12,6 +13,16 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 				layout_id: page.layout_id,
 				site_id: $stateParams.site_id
 			});
+			$("#menu-vertical")[0].innerHTML += "<div class='nav navbar-text' style='margin-bottom: 10px;'>" + 
+														"<a>" + 
+															page.name + 
+														"</a>" +
+												   "</div>";
+			$("#menu-horizontal")[0].innerHTML += "<div class='nav navbar-text'>" + 
+														"<a>" + 
+															page.name + 
+														"</a>" +
+												   "</div>";
 		});
 	};
 
@@ -21,39 +32,111 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 		});
 	};
 
-
-	var preparePage = function() {
+	var prepareBlocks = function() {
 		$(".on-page").each(function() {
 			$(this).draggable({
-				revert: 'invalid'
-			});
-			$(this).css({position: 'absolute'});
-		});
-		for (i = 1; i <= 4; i++) {
-			$("#block"+i).droppable({
-				accept: '.move-block',
-				tolerance: "fit",
-				drop: function(event, ui) {
-					if (!$(ui.draggable).hasClass("on-page")) {
-						$(ui.draggable).clone().addClass("on-page").appendTo(this);
+				revert: 'invalid',
+				containment: 'parent',
+				stop: function(event) {
 						$(".on-page").each(function() {
-							$(this).draggable({
-								revert: 'invalid'
-							});
-							$(this).css({position: 'absolute'});
-						});
+							$(this).click(function(event) {
+								event.stopPropagation();
+								if (clicks == 1) {
+									$(this).addClass("chosen");
+									$(this).css({"boxShadow": '0px 0px 25px 10px rgba(245,8,8,0.8)', transition: '0.3s'});
+									$(this).draggable("disable")
+									clicks = 2;
+								}  else {
+									$(this).removeClass("chosen");
+									$(this).css({"boxShadow": 'none', 'transitionProperty': 'none'});
+									$(this).draggable("enable")
+									clicks = 1;
+								}
+							})
+						})
 					}
+			}).click(function(event) {
+				event.stopPropagation();
+				if (clicks == 1) {
+					$(this).addClass("chosen");
+					$(this).css({"boxShadow": '0px 0px 25px 10px rgba(245,8,8,0.8)', transition: '0.3s'});
+					$(this).draggable("disable")
+					clicks = 2;
+				}  else {
+					$(this).removeClass("chosen");
+					$(this).css({"boxShadow": 'none', 'transitionProperty': 'none'});
+					$(this).draggable("enable")
+					clicks = 1;
 				}
-			});
-		}
-
-		$('#trash').droppable({
-			accept: '.on-page',
+			})
+			$(this).css({position: 'absolute'})
+		});
+		$(".block").droppable({
+			accept: '.move-block',
 			tolerance: 'pointer',
 			drop: function(event, ui) {
-				$(ui.draggable).remove();
+					var check = true;
+					if (!$(ui.draggable).hasClass("on-page")) {
+
+						if ($(ui.draggable)[0].offsetHeight > $(this)[0].offsetHeight) {
+							if ($(ui.draggable)[0].offsetWidth > $(this)[0].offsetWidth) {
+								$(ui.draggable).clone().addClass("on-page").css({width : '99%', height: $(this)[0].offsetHeight - 10}).appendTo(this);
+								check = false;
+							} else {
+								$(ui.draggable).clone().addClass("on-page").css({height : '99%'}).appendTo(this);
+								check = false;
+							}
+						} else if ($(ui.draggable)[0].offsetWidth > $(this)[0].offsetWidth) {
+							$(ui.draggable).clone().addClass("on-page").css({width : '99%', height: $(this)[0].offsetHeight - 10}).appendTo(this);
+							check = false;
+						}
+						
+				
+						if ($(ui.draggable)[0].naturalWidth > $(this)[0].offsetWidth) {
+							if ($(ui.draggable)[0].naturalHeight > $(this)[0].offsetHeight) {
+								$(ui.draggable).clone().addClass("on-page").css({width: $(this)[0].offsetWidth - 10, height: $(this)[0].offsetHeight - 10}).appendTo(this);
+								check = false;
+							} else {
+								console.log("width")
+								$(ui.draggable).clone().addClass("on-page").css({width: '99%'}).appendTo(this);
+								check = false;
+							}
+						} else if ($(ui.draggable)[0].naturalHeight > $(this)[0].offsetHeight) {
+							console.log("height")
+							$(ui.draggable).clone().addClass("on-page").css({height: $(this)[0].offsetHeight - 10}).appendTo(this);
+							check = false;
+						} 
+						if (check == true) {
+							$(ui.draggable).clone().addClass("on-page").appendTo(this);
+						}
+					}
+					$(".on-page").each(function() {
+						$(this).draggable({
+							revert: 'invalid',
+							containment: 'parent'
+						}).click(function() {
+							event.stopPropagation();
+							if (clicks == 1) {
+								$(this).addClass("chosen");
+								$(this).css({"boxShadow": '0px 0px 25px 10px rgba(245,8,8,0.8)', transition: '0.3s'});
+								$(this).draggable("disable");
+								clicks = 2;
+							}  else {
+								$(this).removeClass("chosen");
+								$(this).css({"boxShadow": 'none', 'transitionProperty': 'none'});
+								$(this).draggable("enable")
+								clicks = 1;
+							}
+						});
+						$(this).css({position: 'absolute'});
+					});
+				}
 			}
-		})
+		);
+	}
+
+	var preparePage = function() {
+		prepareBlocks();
 
 		var markdownSettings, markdownTitle;
 		markdownSettings = {
@@ -160,8 +243,9 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 						preparePage();
 						break;
 					case 2:
-						document.getElementById("workspace").innerHTML = "<div style='border: 10px dashed rgba(0,0,0,0.6);'><br><br><br><br><br><br></div><div style='display: flex; flex-direction: row; flex-wrap: nowrap;'><div style='flex: 1; border-right: 10px dashed rgba(0,0,0,0.6); border-left: 10px dashed rgba(0,0,0,0.6);'><br><br><br><br></div><div style='flex: 1; border-right: 10px dashed rgba(0,0,0,0.6);'><br><br><br><br></div><div style='flex: 1; border-right: 10px dashed rgba(0,0,0,0.6);'><br><br><br><br></div><div style='flex: 1; border-right: 10px dashed rgba(0,0,0,0.6);'><br><br><br><br></div></div><div style='display: flex; flex-direction: row; flex-wrap: nowrap;'><div style='border: 10px dashed rgba(0,0,0,0.5); border-right: 0; flex: 1;'><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div><div style='border: 10px dashed rgba(0,0,0,0.5); flex: 3;'><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div><div style='border: 10px dashed rgba(0,0,0,0.5); border-left: 0; flex: 1;'><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div></div>";
-					break;
+						document.getElementById("workspace").innerHTML = layout2;
+						preparePage();
+						break;
 				}
 			} else {
 				document.getElementById("workspace").innerHTML = $scope.page.html;
@@ -173,6 +257,9 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 
 
 	$scope.savePage = function() {
+		$(".on-page").each(function() {
+			$(this).css({"boxShadow": 'none', 'transitionProperty': 'none'});
+		})
 		pages.update({
 			id: $stateParams.page_id,
 			html: document.getElementById("workspace").innerHTML
@@ -192,15 +279,46 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 
 
 
-	layout1 =  "<div id='block1' style='border: 10px dashed rgba(0,0,0,0.6); padding: 0; height: 300px;'>" +
-				"</div>" +
-				"<div style='display: flex; flex-direction: row;'>"+
-					"<div id='block2' style='border: 10px dashed rgba(0,0,0,0.6); border-top: 0; height: 600px; flex: 1;'>" +
+	layout1 =   "<div id='menu-horizontal' style='margin-bottom: 0; display: none;' class='navbar navbar-default'></div>"+
+				"<div style='display: table; width: 100%;'>" +
+					"<div id='menu-vertical' style='margin-bottom: 0; display: none; max-width: 300px; word-wrap: break-all; vertical-align: top;' class='navbar navbar-default'></div>" +
+					"<div style='display: table-cell; width: 100%; position: relative;'>" +
+						"<div class='block' style='border: 5px dashed rgba(0,0,0,0.6); padding: 0; height: 300px; position: relative;'>" +
+						"</div>" +
+						"<div style='display: flex; flex-direction: row;'>"+
+							"<div class='block' style='overflow: visible; border: 5px dashed rgba(0,0,0,0.6); height: 600px; flex: 1; padding: 0; position: relative;'>" +
+							"</div>" +
+							"<div class='block' style='border: 5px dashed rgba(0,0,0,0.6); height: 600px; flex: 1; padding: 0; position: relative;'>" +
+							"</div>" +
+							"<div class='block' style='border: 5px dashed rgba(0,0,0,0.6); height: 600px; flex: 1; padding: 0; position: relative;'>" +
+							"</div>"+
+						"</div>" +
 					"</div>" +
-					"<div id='block3' style='border-bottom: 10px dashed rgba(0,0,0,0.6); height: 600px; flex: 1'>" +
+				"</div>";
+
+	layout2 =	"<div id='menu-horizontal' style='margin-bottom: 0; display: none;' class='navbar navbar-default'></div>"+
+				"<div style='display: table; width: 100%;'>" +
+					"<div id='menu-vertical' style='margin-bottom: 0; display: none; max-width: 300px; word-wrap: break-all; vertical-align: top;' class='navbar navbar-default'></div>" +
+					"<div style='display: table-cell; width: 100%; position: relative;'>" +
+						"<div class='block' style='border: 5px dashed rgba(0,0,0,0.6); height: 250px;'>" +
+						"</div>"+
+						"<div style='display: flex; flex-direction: row; flex-wrap: nowrap;'>" +
+							"<div class='block' style='flex: 1; border: 5px dashed rgba(0,0,0,0.6); height: 130px;'>"+
+							"</div>" +
+							"<div class='block' style='flex: 1; border: 5px dashed rgba(0,0,0,0.6); height: 130px;'>"+
+							"</div>" +
+							"<div class='block' style='flex: 1; border: 5px dashed rgba(0,0,0,0.6); height: 130px;'>"+
+							"</div>" +
+						"</div>"+
+						"<div style='display: flex; flex-direction: row; flex-wrap: nowrap; height: 500px;'>" +
+							"<div class='block' style='border: 5px dashed rgba(0,0,0,0.5); flex: 1;'>" +
+							"</div>" +
+							"<div class='block' style='border: 5px dashed rgba(0,0,0,0.5); flex: 3;'>" +
+							"</div>" +
+							"<div class='block' style='border: 5px dashed rgba(0,0,0,0.5); flex: 1;'>" +
+							"</div>" +
+						"</div>" +
 					"</div>" +
-					"<div id='block4' style='border: 10px dashed rgba(0,0,0,0.6); border-top: 0; height: 600px; flex: 1'>" +
-					"</div>"+
 				"</div>";
 
 	$scope.clearTextArea = function() {
@@ -213,6 +331,70 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 		if ($scope.textBlockSize <= 900) {
 			$(".text-block").children(".move-block.thumbnail").css({width: $scope.textBlockSize+"px", "maxWidth": $scope.textBlockSize+"px"})
 		}
+	}
+
+
+	convertPagesToHTML = function() {
+		var pages = "";
+		$scope.pages.forEach(function(page) {
+			if ($("#menu-vertical").css("display") == 'none') {
+				pages += "<div class='nav navbar-text' style='margin-bottom: 10px;'>" + 
+							"<a>" + 
+								page.name + 
+							"</a>" +
+						 "</div>";
+			} else {
+				pages += "<div class='nav navbar-text'>" + 
+							"<a>" + 
+								page.name + 
+							"</a>" +
+						 "</div>";
+			}
+		});
+		return pages;
+	}
+
+	$scope.addHorizontalMenu = function() {
+		if ($("#menu-horizontal").css("display") == 'none') {
+			$("#menu-horizontal")[0].innerHTML = convertPagesToHTML();
+			$("#menu-horizontal").css({display: ''});
+			$("#menu-vertical").css({display: 'none'});
+		}
+	}
+	$scope.addVerticalMenu = function() {
+		if ($("#menu-vertical").css("display") == 'none') {
+			$("#menu-vertical")[0].innerHTML = convertPagesToHTML();
+			$("#menu-horizontal").css({display: 'none'});
+			$("#menu-vertical").css({display: 'table-cell'});
+		}
+	}
+	$scope.removeMenu = function() {
+		$("#menu-horizontal").css({display: 'none'});
+		$("#menu-vertical").css({display: 'none'});
+	}
+
+	$("#remove-borders-btn").mousedown(function() {
+		$(".block").css({"borderWidth": '0px'});
+	});
+
+	$("#remove-borders-btn").mouseup(function() {
+		$(".block").css({border: '5px dashed rgba(0,0,0,0.6)'});
+		$(".dividable").css({border: ''});
+	});
+
+
+	$scope.showPage = function() {
+		pages.getPage($stateParams.page_id).success(function() {
+			$scope.page = pages.page;
+			document.getElementById("workspace").innerHTML = $scope.page.html;
+			$(".block").css({"borderWidth": '0px'});
+		});
+	}
+
+	$scope.deleteElements = function() {
+		$(".chosen").each(function() {
+			$(this).remove();
+		})
 	}
 };
 

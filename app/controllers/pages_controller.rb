@@ -1,7 +1,7 @@
 class PagesController < ApplicationController
 	
 	def index
-		respond_with Page.all
+		respond_with Page.all.reverse
 	end
 
 	def create
@@ -12,7 +12,7 @@ class PagesController < ApplicationController
 			position = pages.order("position DESC").first.position + 1
 		end
 
-		respond_with Page.create(page_params.merge(user_id: current_user.id, position: position))
+		respond_with Page.create(page_params.merge(position: position))
 	end
 
 	def show

@@ -1,7 +1,11 @@
 class SitesController < ApplicationController
 
 	def index
-		respond_with Site.all
+		respond_with Site.all.reverse
+	end
+
+	def show
+		respond_with Site.find(params[:id])
 	end
 
 	def create
@@ -12,6 +16,11 @@ class SitesController < ApplicationController
 		site = Site.find(params[:id])
 		site.update(site_params)
 		respond_with site
+	end
+
+	def destroy
+		site = Site.find(params[:id])
+		respond_with site.destroy
 	end
 
   private
