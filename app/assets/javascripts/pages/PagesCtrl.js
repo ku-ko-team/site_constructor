@@ -1,5 +1,6 @@
 function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, sites) {
 	var clicks = 1;
+	var changed = [];
 
 	$scope.openPageLayoutsWindow = function() {
 		$uibModal.open({
@@ -77,37 +78,41 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 			drop: function(event, ui) {
 					var check = true;
 					if (!$(ui.draggable).hasClass("on-page")) {
-
-						if ($(ui.draggable)[0].offsetHeight > $(this)[0].offsetHeight) {
-							if ($(ui.draggable)[0].offsetWidth > $(this)[0].offsetWidth) {
-								$(ui.draggable).clone().addClass("on-page").css({width: $(this)[0].offsetWidth - 10, height: $(this)[0].offsetHeight - 10, overflow: "scroll", "overflowX": "hidden"}).appendTo(this);
-								check = false;
-							} else {
-								$(ui.draggable).clone().addClass("on-page").css({height: $(this)[0].offsetHeight - 10, overflow: "scroll", "overflowX": "hidden"}).appendTo(this);
-								check = false;
-							}
-						} else if ($(ui.draggable)[0].offsetWidth > $(this)[0].offsetWidth) {
-							block = $(ui.draggable).clone().addClass("on-page").css({width : $(this)[0].offsetWidth - 10}).appendTo(this);
-							if (block[0].offsetHeight > $(this)[0].offsetHeight) {
-								block.css({overflow: "scroll", "overflowX": "hidden", height: $(this)[0].offsetHeight - 10});
-							}
-							check = false;
-						}
-						
 						$(this).css({position: 'relative'})
-						if ($(ui.draggable)[0].naturalHeight > $(this)[0].naturalHeight) {
+
+						// if ($(ui.draggable)[0].offsetHeight > $(this)[0].offsetHeight) {
+						// 	if ($(ui.draggable)[0].offsetWidth > $(this)[0].offsetWidth) {
+						// 		$(ui.draggable).clone().addClass("on-page").css({width: $(this)[0].offsetWidth - 10, height: $(this)[0].offsetHeight - 10, overflow: "scroll", "overflowX": "hidden"}).appendTo(this);
+						// 		check = false;
+						// 	} else {
+						// 		$(ui.draggable).clone().addClass("on-page").css({height: $(this)[0].offsetHeight - 10, overflow: "scroll", "overflowX": "hidden"}).appendTo(this);
+						// 		check = false;
+						// 	}
+						// } else if ($(ui.draggable)[0].offsetWidth > $(this)[0].offsetWidth) {
+						// 	block = $(ui.draggable).clone().addClass("on-page").css({width : $(this)[0].offsetWidth - 10}).appendTo(this);
+						// 	if (block[0].offsetHeight > $(this)[0].offsetHeight) {
+						// 		block.css({overflow: "scroll", "overflowX": "hidden", height: $(this)[0].offsetHeight - 10});
+						// 	}
+						// 	check = false;
+						// }
+						
+						if ($(ui.draggable)[0].naturalHeight > $(this)[0].offsetHeight) {
 							if ($(ui.draggable)[0].naturalWidth > $(this)[0].offsetWidth) {
 								image = $(ui.draggable).clone().addClass("on-page").appendTo(this);
-								image.css({"maxWidth": '100%', "maxHeight": "100%"})
+								if ($(ui.draggable)[0].naturalWidth > $(ui.draggable)[0].naturalHeight) {
+									image.css({width: '100%', height: "auto", "maxWidth": '100%'})
+									if (image[0].offsetHeight > $(this)[0].offsetHeight) {
+										image.css({height: '100%', width: "auto", "maxHeight": "100%"})
+									}									
+								}
 								check = false;
 							} else {
-								console.log("width")
 								image = $(ui.draggable).clone().addClass("on-page").appendTo(this);
-								image.css({"maxWidth": '100%', "maxHeight": "100%"});
+								image.css({height: '100%', width: "auto", "maxWidth": '100%', "maxHeight": "100%"});
 								check = false;
 							}
 						} else if ($(ui.draggable)[0].naturalWidth > $(this)[0].offsetWidth) {
-							$(ui.draggable).clone().addClass("on-page").css({"maxWidth": '100%', "maxHeight": "100%"}).appendTo(this);
+							$(ui.draggable).clone().addClass("on-page").css({width: "100%", height: "auto", "maxWidth": '100%', "maxHeight": "100%"}).appendTo(this);
 							check = false;
 						} 
 						if (check == true) {
@@ -363,6 +368,9 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 			$("#menu-horizontal")[0].innerHTML = convertPagesToHTML();
 			$("#menu-horizontal").css({display: ''});
 			$("#menu-vertical").css({display: 'none'});
+			changed.forEach(function(item) {
+				item.css({width: 'auto'});
+			})
 		}
 	}
 	$scope.addVerticalMenu = function() {
@@ -370,11 +378,20 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 			$("#menu-vertical")[0].innerHTML = convertPagesToHTML();
 			$("#menu-horizontal").css({display: 'none'});
 			$("#menu-vertical").css({display: 'table-cell'});
+			$(".on-page").each(function() {
+				if ($(this)[0].offsetLeft + $(this)[0].offsetWidth > $(this)[0].offsetParent.offsetWidth) {
+					$(this).css({width: $(this)[0].offsetWidth - ($(this)[0].offsetLeft + $(this)[0].offsetWidth - $(this)[0].offsetParent.offsetWidth) - 5});
+					changed.push($(this))
+				}
+			})
 		}
 	}
 	$scope.removeMenu = function() {
 		$("#menu-horizontal").css({display: 'none'});
 		$("#menu-vertical").css({display: 'none'});
+		changed.forEach(function(item) {
+			item.css({width: 'auto'});
+		})
 	}
 
 	$("#remove-borders-btn").mousedown(function() {
