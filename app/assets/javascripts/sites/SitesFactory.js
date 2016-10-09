@@ -6,7 +6,7 @@ angular.module('app')
 			site: {}
 		};
 
-		s.getAll = function(site) {
+		s.getAll = function() {
 			return $http.get('/sites.json').success(function(data) {
 				angular.copy(data, s.sites);
 			});

@@ -3,7 +3,8 @@ angular.module('app')
 
 		var p = {
 			pages: [],
-			page: {}
+			page: {},
+			image: {}
 		}
 
 		p.create = function(page) {
@@ -34,6 +35,10 @@ angular.module('app')
 			return $http.put('/sites/' + $stateParams.site_id + '/pages/' + page.id +'/change_page_position.json', page).success(function(response) {
 				return response.data;
 			});
+		}
+
+		p.uploadImage = function(base64_format) {
+			return $http.post('/image_upload/do.json', {'base64': base64_format});
 		}
 
 		return p;

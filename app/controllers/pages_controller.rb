@@ -1,8 +1,4 @@
 class PagesController < ApplicationController
-	
-	def index
-		respond_with Page.all.reverse
-	end
 
 	def create
 		pages = Page.all.where(site_id: params[:site_id])
@@ -47,6 +43,10 @@ class PagesController < ApplicationController
 
 	def site_pages
 		respond_with Page.all.where(site_id: params[:id]).order("position ASC")
+	end
+
+	def image_upload
+		Cloudinary::Uploader.upload(params[:base64])
 	end
 
   private

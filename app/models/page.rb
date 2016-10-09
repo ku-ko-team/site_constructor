@@ -1,6 +1,5 @@
 class Page < ApplicationRecord
 	belongs_to :site
-	has_many :blocks
 
 	validates_presence_of :name
 

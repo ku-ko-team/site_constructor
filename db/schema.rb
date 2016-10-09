@@ -10,15 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161007153228) do
+ActiveRecord::Schema.define(version: 20161009152010) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "blocks", force: :cascade do |t|
-    t.string "type"
-    t.string "html"
-  end
 
   create_table "pages", force: :cascade do |t|
     t.string   "name"
@@ -28,6 +23,7 @@ ActiveRecord::Schema.define(version: 20161007153228) do
     t.datetime "updated_at", null: false
     t.string   "html"
     t.integer  "position"
+    t.json     "images"
     t.index ["site_id"], name: "index_pages_on_site_id", using: :btree
   end
 

@@ -26,5 +26,6 @@
 //= require showdown
 //= require angular-markdown-directive/markdown.js
 //= require markitup
+//= require angular-bootstrap-file-field/dist/angular-bootstrap-file-field.min.js
 //= require turbolinks
 //= require_tree .

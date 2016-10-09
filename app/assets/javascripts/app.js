@@ -1,5 +1,5 @@
 angular
-	.module('app', ['ui.router', 'templates', 'ngAnimate', 'ui.bootstrap', 'Devise', 'dndLists', 'ngDragDrop', 'ngSanitize', 'btford.markdown'])
+	.module('app', ['ui.router', 'templates', 'ngAnimate', 'ui.bootstrap', 'Devise', 'dndLists', 'ngDragDrop', 'ngSanitize', 'btford.markdown', 'bootstrap.fileField'])
 	.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 		$stateProvider
 

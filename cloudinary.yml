@@ -1,0 +1,19 @@
+---
+development:
+  cloud_name: dhro7bgin
+  api_key: '881255722535396'
+  api_secret: pT0_-h9h1aOF-wmhGd0X32-F6UY
+  enhance_image_tag: true
+  static_image_support: false
+production:
+  cloud_name: dhro7bgin
+  api_key: '881255722535396'
+  api_secret: pT0_-h9h1aOF-wmhGd0X32-F6UY
+  enhance_image_tag: true
+  static_image_support: true
+test:
+  cloud_name: dhro7bgin
+  api_key: '881255722535396'
+  api_secret: pT0_-h9h1aOF-wmhGd0X32-F6UY
+  enhance_image_tag: true
+  static_image_support: false

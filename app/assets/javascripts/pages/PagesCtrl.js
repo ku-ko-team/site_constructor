@@ -80,25 +80,25 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 					if (!$(ui.draggable).hasClass("on-page")) {
 						$(this).css({position: 'relative'})
 
-						// if ($(ui.draggable)[0].offsetHeight > $(this)[0].offsetHeight) {
-						// 	if ($(ui.draggable)[0].offsetWidth > $(this)[0].offsetWidth) {
-						// 		$(ui.draggable).clone().addClass("on-page").css({width: $(this)[0].offsetWidth - 10, height: $(this)[0].offsetHeight - 10, overflow: "scroll", "overflowX": "hidden"}).appendTo(this);
-						// 		check = false;
-						// 	} else {
-						// 		$(ui.draggable).clone().addClass("on-page").css({height: $(this)[0].offsetHeight - 10, overflow: "scroll", "overflowX": "hidden"}).appendTo(this);
-						// 		check = false;
-						// 	}
-						// } else if ($(ui.draggable)[0].offsetWidth > $(this)[0].offsetWidth) {
-						// 	block = $(ui.draggable).clone().addClass("on-page").css({width : $(this)[0].offsetWidth - 10}).appendTo(this);
-						// 	if (block[0].offsetHeight > $(this)[0].offsetHeight) {
-						// 		block.css({overflow: "scroll", "overflowX": "hidden", height: $(this)[0].offsetHeight - 10});
-						// 	}
-						// 	check = false;
-						// }
+						if ($(ui.draggable)[0].offsetHeight > $(this)[0].offsetHeight) {
+							if ($(ui.draggable)[0].offsetWidth > $(this)[0].offsetWidth) {
+								$(ui.draggable).clone().addClass("on-page").css({width: $(this)[0].offsetWidth - 10, height: $(this)[0].offsetHeight - 10, overflow: "scroll", "overflowX": "hidden"}).appendTo(this);
+								check = false;
+							} else {
+								$(ui.draggable).clone().addClass("on-page").css({height: $(this)[0].offsetHeight - 10, overflow: "scroll", "overflowX": "hidden"}).appendTo(this);
+								check = false;
+							}
+						} else if ($(ui.draggable)[0].offsetWidth > $(this)[0].offsetWidth) {
+							block = $(ui.draggable).clone().addClass("on-page").css({width : $(this)[0].offsetWidth - 10}).appendTo(this);
+							if (block[0].offsetHeight > $(this)[0].offsetHeight) {
+								block.css({overflow: "scroll", "overflowX": "hidden", height: $(this)[0].offsetHeight - 10});
+							}
+							check = false;
+						}
 						
 						if ($(ui.draggable)[0].naturalHeight > $(this)[0].offsetHeight) {
 							if ($(ui.draggable)[0].naturalWidth > $(this)[0].offsetWidth) {
-								image = $(ui.draggable).clone().addClass("on-page").appendTo(this);
+								image = $(ui.draggable).clone().addClass("on-page").removeClass("image").appendTo(this);
 								if ($(ui.draggable)[0].naturalWidth > $(ui.draggable)[0].naturalHeight) {
 									image.css({width: '100%', height: "auto", "maxWidth": '100%'})
 									if (image[0].offsetHeight > $(this)[0].offsetHeight) {
@@ -107,16 +107,16 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 								}
 								check = false;
 							} else {
-								image = $(ui.draggable).clone().addClass("on-page").appendTo(this);
+								image = $(ui.draggable).clone().addClass("on-page").removeClass("image").appendTo(this);
 								image.css({height: '100%', width: "auto", "maxWidth": '100%', "maxHeight": "100%"});
 								check = false;
 							}
 						} else if ($(ui.draggable)[0].naturalWidth > $(this)[0].offsetWidth) {
-							$(ui.draggable).clone().addClass("on-page").css({width: "100%", height: "auto", "maxWidth": '100%', "maxHeight": "100%"}).appendTo(this);
+							$(ui.draggable).clone().addClass("on-page").removeClass("image").css({width: "100%", height: "auto", "maxWidth": '100%', "maxHeight": "100%"}).appendTo(this);
 							check = false;
 						} 
 						if (check == true) {
-							$(ui.draggable).clone().addClass("on-page").appendTo(this);
+							$(ui.draggable).clone().addClass("on-page").removeClass("image").appendTo(this);
 						}
 					}
 					$(".on-page").each(function() {
@@ -249,17 +249,18 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 				switch ($scope.page.layout_id) {
 					case 1: 
 						document.getElementById("workspace").innerHTML = layout1;
-						preparePage();
+						$("#menu-vertical")[0].innerHTML = convertPagesToHTML();
 						break;
 					case 2:
 						document.getElementById("workspace").innerHTML = layout2;
-						preparePage();
+						$("#menu-vertical")[0].innerHTML = convertPagesToHTML();
 						break;
 				}
 			} else {
 				document.getElementById("workspace").innerHTML = $scope.page.html;
-				preparePage();
+				$("#menu-vertical")[0].innerHTML = convertPagesToHTML();
 			};
+			preparePage();
 		});
 		return true;
 	};
@@ -272,7 +273,9 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 		pages.update({
 			id: $stateParams.page_id,
 			html: document.getElementById("workspace").innerHTML
-		});
+		}).success(function() {
+			preparePage();
+		})
 	};
 
 	$scope.dropCallback = function(event, index, item) {
@@ -288,9 +291,9 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 
 
 
-	layout1 =   "<div id='menu-horizontal' style='margin-bottom: 0; display: none;' class='navbar navbar-default'></div>"+
+	layout1 =   "<div id='menu-horizontal' style='margin-bottom: 0; opacity: 0; margin-left: 80px;' class='navbar navbar-default'></div>"+
 				"<div style='display: table; width: 100%;'>" +
-					"<div id='menu-vertical' style='margin-bottom: 0; display: none; max-width: 300px; word-wrap: break-all; vertical-align: top;' class='navbar navbar-default'></div>" +
+					"<div id='menu-vertical' style='display: table-cell; margin-bottom: 0; opacity: 0; max-width: 300px; word-wrap: break-all; vertical-align: top;' class='navbar navbar-default'></div>" +
 					"<div style='display: table-cell; width: 100%; position: relative;'>" +
 						"<div class='block' style='border: 5px dashed rgba(0,0,0,0.6); padding: 0; height: 300px; position: relative;'>" +
 						"</div>" +
@@ -305,9 +308,9 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 					"</div>" +
 				"</div>";
 
-	layout2 =	"<div id='menu-horizontal' style='margin-bottom: 0; display: none;' class='navbar navbar-default'></div>"+
+	layout2 =	"<div id='menu-horizontal' style='margin-bottom: 0; opacity: 0; margin-left: 80px;' class='navbar navbar-default'></div>"+
 				"<div style='display: table; width: 100%;'>" +
-					"<div id='menu-vertical' style='margin-bottom: 0; display: none; max-width: 300px; word-wrap: break-all; vertical-align: top;' class='navbar navbar-default'></div>" +
+					"<div id='menu-vertical' style='display: table-cell; margin-bottom: 0; opacity: 0; max-width: 300px; word-wrap: break-all; vertical-align: top;' class='navbar navbar-default'></div>" +
 					"<div style='display: table-cell; width: 100%; position: relative;'>" +
 						"<div class='block' style='border: 5px dashed rgba(0,0,0,0.6); height: 250px;'>" +
 						"</div>"+
@@ -344,54 +347,47 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 
 
 	convertPagesToHTML = function() {
-		var pages = "";
-		$scope.pages.forEach(function(page) {
-			if ($("#menu-vertical").css("display") == 'none') {
-				pages += "<div class='nav navbar-text' style='margin-bottom: 10px;'>" + 
-							"<a>" + 
-								page.name + 
-							"</a>" +
-						 "</div>";
-			} else {
-				pages += "<div class='nav navbar-text'>" + 
-							"<a>" + 
-								page.name + 
-							"</a>" +
-						 "</div>";
-			}
-		});
-		return pages;
+		pages.getSitePages($stateParams.site_id).success(function() {
+			$scope.pages = pages.pages;
+		}).success(function() {
+			var pages = "";
+			$scope.pages.forEach(function(page) {
+				if ($("#menu-vertical").css("display") == 'none') {
+					pages += "<div class='nav navbar-text' style='margin-bottom: 10px;'>" + 
+								"<a>" + 
+									page.name + 
+								"</a>" +
+							 "</div>";
+				} else {
+					pages += "<div class='nav navbar-text'>" + 
+								"<a>" + 
+									page.name + 
+								"</a>" +
+							 "</div>";
+				}
+			});
+			return pages;
+		})
+		
 	}
 
 	$scope.addHorizontalMenu = function() {
-		if ($("#menu-horizontal").css("display") == 'none') {
+		if ($("#menu-horizontal").css("opacity") == '0') {
 			$("#menu-horizontal")[0].innerHTML = convertPagesToHTML();
-			$("#menu-horizontal").css({display: ''});
-			$("#menu-vertical").css({display: 'none'});
-			changed.forEach(function(item) {
-				item.css({width: 'auto'});
-			})
+			$("#menu-horizontal").css({opacity: '1'});
+			$("#menu-vertical").css({opacity: '0'});
 		}
 	}
 	$scope.addVerticalMenu = function() {
-		if ($("#menu-vertical").css("display") == 'none') {
+		if ($("#menu-vertical").css("opacity") == '0') {
 			$("#menu-vertical")[0].innerHTML = convertPagesToHTML();
-			$("#menu-horizontal").css({display: 'none'});
-			$("#menu-vertical").css({display: 'table-cell'});
-			$(".on-page").each(function() {
-				if ($(this)[0].offsetLeft + $(this)[0].offsetWidth > $(this)[0].offsetParent.offsetWidth) {
-					$(this).css({width: $(this)[0].offsetWidth - ($(this)[0].offsetLeft + $(this)[0].offsetWidth - $(this)[0].offsetParent.offsetWidth) - 5});
-					changed.push($(this))
-				}
-			})
+			$("#menu-horizontal").css({opacity: '0'});
+			$("#menu-vertical").css({opacity: '1'});
 		}
 	}
 	$scope.removeMenu = function() {
-		$("#menu-horizontal").css({display: 'none'});
-		$("#menu-vertical").css({display: 'none'});
-		changed.forEach(function(item) {
-			item.css({width: 'auto'});
-		})
+		$("#menu-horizontal").css({opacity: '0'});
+		$("#menu-vertical").css({opacity: '0'});
 	}
 
 	$("#remove-borders-btn").mousedown(function() {
@@ -416,6 +412,33 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 		$(".chosen").each(function() {
 			$(this).remove();
 		})
+	}
+
+	$scope.authorize = function() {
+		var authorized = false;
+		sites.getSite($stateParams.site_id).success(function(site) {
+			if ($rootScope.current_user) {
+				if (($rootScope.current_user.role == 'admin') || (site.user.id == $rootScope.current_user.id)) {
+					site.pages.forEach(function(site_page) {
+						if (site_page.id == $stateParams.page_id) {
+							console.log("TRUE");
+							authorized = true;
+							return;
+						}
+					})
+				}
+			}
+			if (!authorized) {
+				$state.go('main');
+			}
+		})
+	}
+
+
+	$scope.addImage = function() {
+		pages.uploadImage($scope.pimage).success(function(image){
+			$(".image").attr({src: image.url})
+		});
 	}
 };
 
