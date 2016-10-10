@@ -26,7 +26,6 @@ function MainCtrl($scope, $rootScope, $state, sites, Auth) {
 	$scope.siteDestroy = function(site) {
 		if (confirm("Are you sure?")) {
 			sites.destroy(site).success(function() {
-				sites.getAll();
 				$scope.sites = sites.sites;
 			});
 		}

@@ -32,7 +32,7 @@ angular.module('app')
 
 		s.destroy = function(site) {
 			return $http.delete('/sites/' + site.id + '.json').success(function(data) {
-				s.sites.splice(site.sites.indexOf(site), 1);
+				s.sites.splice(s.sites.indexOf(site), 1);
 			});
 		};
 

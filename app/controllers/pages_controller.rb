@@ -50,6 +50,12 @@ class PagesController < ApplicationController
 		render json: response
 	end
 
+	def destroy
+		page = Page.find(params[:id])
+		respond_with page.destroy
+	end
+
+
   private
 
   def page_params

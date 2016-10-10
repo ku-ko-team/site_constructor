@@ -341,6 +341,14 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 	}
 	/////////////
 
+	$scope.pageDestroy = function(page) {
+		if (confirm("Are you sure?")) {
+			pages.destroy(page).success(function() {
+				$scope.pages = pages.pages;
+			});
+		}
+	}
+
 	$scope.authorize = function() {
 		var authorized = false;
 		sites.getSite($stateParams.site_id).success(function(site) {

@@ -44,5 +44,11 @@ angular.module('app')
 			})
 		}
 
+		p.destroy = function(page) {
+			return $http.delete('/pages/' + page.id + '.json').success(function(data) {
+				p.pages.splice(p.pages.indexOf(page), 1);
+			})
+		}
+
 		return p;
 }]);
