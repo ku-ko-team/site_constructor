@@ -46,7 +46,8 @@ class PagesController < ApplicationController
 	end
 
 	def image_upload
-		Cloudinary::Uploader.upload(params[:base64])
+		response = Cloudinary::Uploader.upload(params[:base64])
+		render json: response
 	end
 
   private

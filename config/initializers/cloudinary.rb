@@ -1,7 +1,7 @@
 Cloudinary.config do |config|
-  config.cloud_name = 'dhro7bgin'
-  config.api_key = '881255722535396'
-  config.api_secret = 'pT0_-h9h1aOF-wmhGd0X32-F6UY'
+  config.cloud_name = 'srzh'
+  config.api_key = '791958829867185'
+  config.api_secret = 'rquJDhzdGvuSM2ghV6tvL3N92pU'
   config.cdn_subdomain = true
 end
 

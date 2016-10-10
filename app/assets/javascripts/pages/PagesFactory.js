@@ -38,7 +38,10 @@ angular.module('app')
 		}
 
 		p.uploadImage = function(base64_format) {
-			return $http.post('/image_upload/do.json', {'base64': base64_format});
+			return $http.post('/image_upload/do.json', {'base64': base64_format}).success(function(data) {
+				alert("LOADED")
+				p.image = data;
+			})
 		}
 
 		return p;

@@ -17,13 +17,26 @@ angular
 			.state('siteEdit', {
 				url: '/sites/:site_id/edit',
 				templateUrl: 'sites/_siteEdit.html',
-				controller: 'SitesCtrl'
+				controller: 'SitesCtrl',
+				resolve: {
+					pagesPromise: ['pages', '$stateParams', function(pages, $stateParams) {
+						return pages.getSitePages($stateParams.site_id);
+					}]
+				}
 			})
 
 			.state('siteEdit.pageEdit', {
 				url: '^/sites/:site_id/pages/:page_id/edit',
 				templateUrl: 'pages/_pageEdit.html',
-				controller: 'PagesCtrl'
+				controller: 'PagesCtrl',
+				resolve: {
+					pagesPromise: ['pages', '$stateParams', function(pages, $stateParams) {
+						return pages.getSitePages($stateParams.site_id);
+					}],
+					pagePromise: ['pages', '$stateParams', function(pages, $stateParams) {
+						return pages.getPage($stateParams.page_id)
+					}]
+				}
 			})
 
 

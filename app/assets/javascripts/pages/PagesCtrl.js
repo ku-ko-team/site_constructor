@@ -1,154 +1,148 @@
 function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, sites) {
-	var clicks = 1;
-	var changed = [];
+	$scope.pages = pages.pages;
+	$scope.page = pages.page;
 
-	$scope.openPageLayoutsWindow = function() {
-		$uibModal.open({
-			animation: true,
-			templateUrl: 'pages/_pageLayouts.html',
-			controller: 'PageLayoutsCtrl',
-			size: 'lg'
-		}).result.then(function(page) {
-			pages.create({
-				name: page.name,
-				layout_id: page.layout_id,
-				site_id: $stateParams.site_id
-			});
-			$("#menu-vertical")[0].innerHTML += "<div class='nav navbar-text' style='margin-bottom: 10px;'>" + 
-														"<a>" + 
-															page.name + 
-														"</a>" +
-												   "</div>";
-			$("#menu-horizontal")[0].innerHTML += "<div class='nav navbar-text'>" + 
-														"<a>" + 
-															page.name + 
-														"</a>" +
-												   "</div>";
-		});
-	};
-
-	$scope.getSitePages = function() {
-		pages.getSitePages($stateParams.site_id).success(function() {
-			$scope.pages = pages.pages;
-		});
+	$scope.loadPage = function() {
+			if (!$scope.page.html) {
+				switch ($scope.page.layout_id) {
+					case 1: 
+						$("#workspace")[0].innerHTML = layout1;
+						break;
+					case 2:
+						$("#workspace")[0].innerHTML = layout2;
+						break;
+				}
+			} else {
+				$("#workspace")[0].innerHTML = $scope.page.html;
+			};
+			prepareBlocks();
+			createMenu();
 	};
 
 	var prepareBlocks = function() {
 		$(".on-page").each(function() {
 			$(this).draggable({
 				revert: 'invalid',
-				containment: 'parent',
-				stop: function(event) {
-						$(".on-page").each(function() {
-							$(this).click(function(event) {
-								event.stopPropagation();
-								if (clicks == 1) {
-									$(this).addClass("chosen");
-									$(this).css({"boxShadow": '0px 0px 25px 10px rgba(245,8,8,0.8)', transition: '0.3s'});
-									$(this).draggable("disable")
-									clicks = 2;
-								}  else {
-									$(this).removeClass("chosen");
-									$(this).css({"boxShadow": 'none', 'transitionProperty': 'none'});
-									$(this).draggable("enable")
-									clicks = 1;
-								}
-							})
-						})
-					}
-			}).click(function(event) {
-				event.stopPropagation();
-				if (clicks == 1) {
+				containment: 'parent'
+			})
+			$(this).click(function() {
+				if ($(this).hasClass("chosen")) {
+					$(this).removeClass("chosen");
+					$(this).css({"boxShadow": 'none', transition: '0s'});
+					$(this).draggable("enable");
+				} else {
 					$(this).addClass("chosen");
 					$(this).css({"boxShadow": '0px 0px 25px 10px rgba(245,8,8,0.8)', transition: '0.3s'});
-					$(this).draggable("disable")
-					clicks = 2;
-				}  else {
-					$(this).removeClass("chosen");
-					$(this).css({"boxShadow": 'none', 'transitionProperty': 'none'});
-					$(this).draggable("enable")
-					clicks = 1;
+					$(this).draggable("disable");
 				}
-			})
+				
+			})	
 			$(this).css({position: 'absolute'})
+
 		});
 		$(".block").droppable({
 			accept: '.move-block',
 			tolerance: 'pointer',
 			drop: function(event, ui) {
-					var check = true;
-					if (!$(ui.draggable).hasClass("on-page")) {
+					var itemIsSuitableToBlock = true;
+					if (!$(ui.draggable).hasClass("on-page")) {		// 1 Check if dragged item is NOT on the page
 						$(this).css({position: 'relative'})
-
-						if ($(ui.draggable)[0].offsetHeight > $(this)[0].offsetHeight) {
-							if ($(ui.draggable)[0].offsetWidth > $(this)[0].offsetWidth) {
-								$(ui.draggable).clone().addClass("on-page").css({width: $(this)[0].offsetWidth - 10, height: $(this)[0].offsetHeight - 10, overflow: "scroll", "overflowX": "hidden"}).appendTo(this);
-								check = false;
-							} else {
-								$(ui.draggable).clone().addClass("on-page").css({height: $(this)[0].offsetHeight - 10, overflow: "scroll", "overflowX": "hidden"}).appendTo(this);
-								check = false;
-							}
-						} else if ($(ui.draggable)[0].offsetWidth > $(this)[0].offsetWidth) {
-							block = $(ui.draggable).clone().addClass("on-page").css({width : $(this)[0].offsetWidth - 10}).appendTo(this);
-							if (block[0].offsetHeight > $(this)[0].offsetHeight) {
-								block.css({overflow: "scroll", "overflowX": "hidden", height: $(this)[0].offsetHeight - 10});
-							}
-							check = false;
-						}
-						
-						if ($(ui.draggable)[0].naturalHeight > $(this)[0].offsetHeight) {
-							if ($(ui.draggable)[0].naturalWidth > $(this)[0].offsetWidth) {
-								image = $(ui.draggable).clone().addClass("on-page").removeClass("image").appendTo(this);
-								if ($(ui.draggable)[0].naturalWidth > $(ui.draggable)[0].naturalHeight) {
-									image.css({width: '100%', height: "auto", "maxWidth": '100%'})
-									if (image[0].offsetHeight > $(this)[0].offsetHeight) {
-										image.css({height: '100%', width: "auto", "maxHeight": "100%"})
+						if ($(ui.draggable).hasClass("image")) {	// 2 Check if dragged item is an image
+							if ($(ui.draggable)[0].naturalHeight > $(this)[0].offsetHeight) {  							// 3 Check if image has bigger height than block, where it should be placed						
+								if ($(ui.draggable)[0].naturalWidth > $(this)[0].offsetWidth) { 						// 4 Check if image also has bigger width than block, where it should be placed 
+									item = $(ui.draggable)
+														.clone()	//make duplicate of draggable item for allowing user to add same image more than once without reuploading it
+														.addClass("on-page")	//now our image is on page
+														.removeClass("image")
+														.css({width: '100%', height: "auto", "maxWidth": '100%'})	// customizing width to match block, where image should be placed
+														.appendTo(this);	// adding our image to page
+									if (item[0].offsetHeight > $(this)[0].offsetHeight) {		// 5 Check if after chaning image width it's still has greater height than block
+										item.css({height: '100%', width: "auto", "maxHeight": "100%"}); // Finally customizing image height
 									}									
+								} else { 																				// 4(else) If image has suitable width but not suitable height																							
+									item = $(ui.draggable)
+														.clone()
+														.addClass("on-page")
+														.removeClass("image")
+														.css({height: '100%', width: "auto", "maxWidth": '100%', "maxHeight": "100%"})
+														.appendTo(this);
 								}
-								check = false;
-							} else {
-								image = $(ui.draggable).clone().addClass("on-page").removeClass("image").appendTo(this);
-								image.css({height: '100%', width: "auto", "maxWidth": '100%', "maxHeight": "100%"});
-								check = false;
+								itemIsSuitableToBlock = false;
+							} else if ($(ui.draggable)[0].naturalWidth > $(this)[0].offsetWidth) {						// 3(else if) If not - check if image has bigger width than block(but height is suitable, because of 3rd IF statement)
+								item = $(ui.draggable)
+													.clone()
+													.addClass("on-page")
+													.removeClass("image")
+													.css({width: "100%", height: "auto", "maxWidth": '100%', "maxHeight": "100%"})
+													.appendTo(this);
+								itemIsSuitableToBlock = false;
+							} 
+						} else {	// 2(else) If item is not the image(algorithm is the same as for the image, but here scrollbars needed sometimes)
+							blockWidth = $(this)[0].offsetWidth - 10;
+							blockHeight = $(this)[0].offsetHeight - 10;
+							if ($(ui.draggable)[0].offsetHeight > blockHeight) {
+								if ($(ui.draggable)[0].offsetWidth > blockHeight) {
+									item = $(ui.draggable)
+														.clone()
+														.addClass("on-page")
+														.css({width: blockWidth, height: blockHeight, overflow: "scroll", "overflowX": "hidden"})
+														.appendTo(this);
+									
+								} else {
+									item = $(ui.draggable)
+														.clone()
+														.addClass("on-page")
+														.css({height: '100%', overflow: "scroll", "overflowX": "hidden"})
+														.appendTo(this);
+								}
+								itemIsSuitableToBlock = false;
+							} else if ($(ui.draggable)[0].offsetWidth > blockWidth) {
+								item = $(ui.draggable)
+													.clone()
+													.addClass("on-page")
+													.css({width: blockWidth})
+													.appendTo(this);
+								if (item[0].offsetHeight > blockHeight) {
+									item.css({height: blockHeight, overflow: "scroll", "overflowX": "hidden"});
+								}
+								itemIsSuitableToBlock = false;
 							}
-						} else if ($(ui.draggable)[0].naturalWidth > $(this)[0].offsetWidth) {
-							$(ui.draggable).clone().addClass("on-page").removeClass("image").css({width: "100%", height: "auto", "maxWidth": '100%', "maxHeight": "100%"}).appendTo(this);
-							check = false;
-						} 
-						if (check == true) {
-							$(ui.draggable).clone().addClass("on-page").removeClass("image").appendTo(this);
 						}
-					}
-					$(".on-page").each(function() {
-						$(this).draggable({
+
+						if (itemIsSuitableToBlock == true) {  	//If all checks are successfull
+							item = $(ui.draggable)						//just add item to the page without any changes
+												.clone()
+												.addClass("on-page")
+												.removeClass("image")
+												.appendTo(this);
+						}
+
+						item.css({position: 'absolute'})
+
+						item.draggable({
 							revert: 'invalid',
 							containment: 'parent'
-						}).click(function() {
-							event.stopPropagation();
-							if (clicks == 1) {
+						});
+						item.click(function() {
+							if ($(this).hasClass("chosen")) {
+								$(this).removeClass("chosen");
+								$(this).css({"boxShadow": 'none', transition: '0s'});
+								$(this).draggable("enable");
+							} else {
 								$(this).addClass("chosen");
 								$(this).css({"boxShadow": '0px 0px 25px 10px rgba(245,8,8,0.8)', transition: '0.3s'});
 								$(this).draggable("disable");
-								clicks = 2;
-							}  else {
-								$(this).removeClass("chosen");
-								$(this).css({"boxShadow": 'none', 'transitionProperty': 'none'});
-								$(this).draggable("enable")
-								clicks = 1;
 							}
-						});
-						$(this).css({position: 'absolute'});
-					});
+							
+						})					
+					}
 				}
 			}
 		);
 	}
 
-	var preparePage = function() {
-		prepareBlocks();
-
-		var markdownSettings, markdownTitle;
-		markdownSettings = {
+	$scope.configureMarkDown = function() {
+		var markdownSettings = {
 			markupSet: [
 				{
 					name: 'First Level Heading',
@@ -229,7 +223,7 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 			]
 		};
 
-		markdownTitle = function(markItUp, char) {
+		var markdownTitle = function(markItUp, char) {
 			var heading, i, j, n, ref;
 				heading = '';
 				n = $.trim(markItUp.selection || markItUp.placeHolder).length;
@@ -239,32 +233,85 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 				return '\n' + heading;
 		};
 
-		$('#text-block-input').markItUp(markdownSettings);
+		$('#markdown-editor').markItUp(markdownSettings);
 	}
 
-	$scope.getPage = function() {
-		pages.getPage($stateParams.page_id).success(function() {
-			$scope.page = pages.page;
-			if (!$scope.page.html) {
-				switch ($scope.page.layout_id) {
-					case 1: 
-						document.getElementById("workspace").innerHTML = layout1;
-						$("#menu-vertical")[0].innerHTML = convertPagesToHTML();
-						break;
-					case 2:
-						document.getElementById("workspace").innerHTML = layout2;
-						$("#menu-vertical")[0].innerHTML = convertPagesToHTML();
-						break;
-				}
-			} else {
-				document.getElementById("workspace").innerHTML = $scope.page.html;
-				$("#menu-vertical")[0].innerHTML = convertPagesToHTML();
-			};
-			preparePage();
+	$scope.openPageLayoutsWindow = function() {
+		$uibModal.open({
+			animation: true,
+			templateUrl: 'pages/_pageLayouts.html',
+			controller: 'PageLayoutsCtrl',
+			size: 'lg'
+		}).result.then(function(page) {
+			pages.create({
+				name: page.name,
+				layout_id: page.layout_id,
+				site_id: $stateParams.site_id
+			});
 		});
-		return true;
 	};
 
+
+	createMenu = function() {
+		var menu = "";
+		pages.pages.forEach(function(page) {
+			menu += "<div class='nav navbar-text' style='margin-bottom: 10px;'>" + 
+						"<a>" + 
+							page.name + 
+						"</a>" +
+					 "</div>";
+	
+		});
+		$("#menu-horizontal")[0].innerHTML = menu;
+		$("#menu-vertical")[0].innerHTML = menu;
+	}
+
+	$scope.addHorizontalMenu = function() {
+		createMenu();
+		if ($("#menu-horizontal").css("opacity") == '0') {
+			$("#menu-horizontal").css({opacity: '1'});
+			$("#menu-vertical").css({opacity: '0'});
+		}
+	}
+	$scope.addVerticalMenu = function() {
+		createMenu()
+		if ($("#menu-vertical").css("opacity") == '0') {
+			$("#menu-horizontal").css({opacity: '0'});
+			$("#menu-vertical").css({opacity: '1'});
+		}
+	}
+	$scope.removeMenu = function() {
+		$("#menu-horizontal").css({opacity: '0'});
+		$("#menu-vertical").css({opacity: '0'});
+	}
+
+	///////////// Hide/show borders
+	$("#remove-borders-btn").mousedown(function() {
+		$(".block").css({"borderWidth": '0px'});
+	});
+
+	$("#remove-borders-btn").mouseup(function() {
+		$(".block").css({border: '5px dashed rgba(0,0,0,0.6)'});
+	});
+	/////////////
+
+	$scope.clearMarkDownEditor = function() {
+		$("#markdown-editor").val('');
+		$(".move-block.thumbnail")[0].innerHTML = '';
+		$("#markdown-editor-size-input").val('');
+	}
+
+	$scope.setMarkDownEditorSize = function() {
+		if ($scope.markDownEditorSize <= 900) {
+			$(".move-block.thumbnail").css({width: $scope.markDownEditorSize+"px", "maxWidth": $scope.markDownEditorSize+"px"})
+		}
+	}
+
+	$scope.deleteElements = function() {
+		$(".chosen").each(function() {
+			$(this).remove();
+		})
+	}
 
 	$scope.savePage = function() {
 		$(".on-page").each(function() {
@@ -273,12 +320,17 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 		pages.update({
 			id: $stateParams.page_id,
 			html: document.getElementById("workspace").innerHTML
-		}).success(function() {
-			preparePage();
 		})
 	};
 
-	$scope.dropCallback = function(event, index, item) {
+	$scope.addImage = function() {
+		pages.uploadImage($scope.previewImage).success(function(){
+			$(".image").attr({src: pages.image.url})
+		});
+	}
+
+	///////////// angular drag and drop lists
+	$scope.changePagePosition = function(event, index, item) {
 		pages.changePagePosition({
 			id: item.id,
 			position: index + 1
@@ -287,11 +339,36 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 		})
 		return item;
 	}
+	/////////////
 
+	$scope.authorize = function() {
+		var authorized = false;
+		sites.getSite($stateParams.site_id).success(function(site) {
+			if ($rootScope.current_user) {
+				if (($rootScope.current_user.role == 'admin') || (site.user.id == $rootScope.current_user.id)) {
+					site.pages.forEach(function(site_page) {
+						if (site_page.id == $stateParams.page_id) {
+							authorized = true;
+							return;
+						}
+					})
+				}
+			}
+			if (!authorized) {
+				$state.go('main');
+			}
+		})
+	}
 
+	$scope.showPage = function() {
+		pages.getPage($stateParams.page_id).success(function() {
+			$scope.page = pages.page;
+			document.getElementById("workspace").innerHTML = $scope.page.html;
+			$(".block").css({"borderWidth": '0px'});
+		});
+	}
 
-
-	layout1 =   "<div id='menu-horizontal' style='margin-bottom: 0; opacity: 0; margin-left: 80px;' class='navbar navbar-default'></div>"+
+	layout1 =   "<div id='menu-horizontal' style='margin-bottom: 0; opacity: 0;' class='navbar navbar-default'></div>"+
 				"<div style='display: table; width: 100%;'>" +
 					"<div id='menu-vertical' style='display: table-cell; margin-bottom: 0; opacity: 0; max-width: 300px; word-wrap: break-all; vertical-align: top;' class='navbar navbar-default'></div>" +
 					"<div style='display: table-cell; width: 100%; position: relative;'>" +
@@ -308,7 +385,7 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 					"</div>" +
 				"</div>";
 
-	layout2 =	"<div id='menu-horizontal' style='margin-bottom: 0; opacity: 0; margin-left: 80px;' class='navbar navbar-default'></div>"+
+	layout2 =	"<div id='menu-horizontal' style='margin-bottom: 0; opacity: 0;' class='navbar navbar-default'></div>"+
 				"<div style='display: table; width: 100%;'>" +
 					"<div id='menu-vertical' style='display: table-cell; margin-bottom: 0; opacity: 0; max-width: 300px; word-wrap: break-all; vertical-align: top;' class='navbar navbar-default'></div>" +
 					"<div style='display: table-cell; width: 100%; position: relative;'>" +
@@ -332,114 +409,6 @@ function PagesCtrl($scope, $rootScope, $state, $stateParams, $uibModal, pages, s
 						"</div>" +
 					"</div>" +
 				"</div>";
-
-	$scope.clearTextArea = function() {
-		$("#text-block-input").val('');
-		$(".text-block").children(".move-block.thumbnail")[0].innerHTML = '';
-		$("#text-block-size-input").val('');
-	}
-
-	$scope.setBlockSize = function() {
-		if ($scope.textBlockSize <= 900) {
-			$(".text-block").children(".move-block.thumbnail").css({width: $scope.textBlockSize+"px", "maxWidth": $scope.textBlockSize+"px"})
-		}
-	}
-
-
-	convertPagesToHTML = function() {
-		pages.getSitePages($stateParams.site_id).success(function() {
-			$scope.pages = pages.pages;
-		}).success(function() {
-			var pages = "";
-			$scope.pages.forEach(function(page) {
-				if ($("#menu-vertical").css("display") == 'none') {
-					pages += "<div class='nav navbar-text' style='margin-bottom: 10px;'>" + 
-								"<a>" + 
-									page.name + 
-								"</a>" +
-							 "</div>";
-				} else {
-					pages += "<div class='nav navbar-text'>" + 
-								"<a>" + 
-									page.name + 
-								"</a>" +
-							 "</div>";
-				}
-			});
-			return pages;
-		})
-		
-	}
-
-	$scope.addHorizontalMenu = function() {
-		if ($("#menu-horizontal").css("opacity") == '0') {
-			$("#menu-horizontal")[0].innerHTML = convertPagesToHTML();
-			$("#menu-horizontal").css({opacity: '1'});
-			$("#menu-vertical").css({opacity: '0'});
-		}
-	}
-	$scope.addVerticalMenu = function() {
-		if ($("#menu-vertical").css("opacity") == '0') {
-			$("#menu-vertical")[0].innerHTML = convertPagesToHTML();
-			$("#menu-horizontal").css({opacity: '0'});
-			$("#menu-vertical").css({opacity: '1'});
-		}
-	}
-	$scope.removeMenu = function() {
-		$("#menu-horizontal").css({opacity: '0'});
-		$("#menu-vertical").css({opacity: '0'});
-	}
-
-	$("#remove-borders-btn").mousedown(function() {
-		$(".block").css({"borderWidth": '0px'});
-	});
-
-	$("#remove-borders-btn").mouseup(function() {
-		$(".block").css({border: '5px dashed rgba(0,0,0,0.6)'});
-		$(".dividable").css({border: ''});
-	});
-
-
-	$scope.showPage = function() {
-		pages.getPage($stateParams.page_id).success(function() {
-			$scope.page = pages.page;
-			document.getElementById("workspace").innerHTML = $scope.page.html;
-			$(".block").css({"borderWidth": '0px'});
-		});
-	}
-
-	$scope.deleteElements = function() {
-		$(".chosen").each(function() {
-			$(this).remove();
-		})
-	}
-
-	$scope.authorize = function() {
-		var authorized = false;
-		sites.getSite($stateParams.site_id).success(function(site) {
-			if ($rootScope.current_user) {
-				if (($rootScope.current_user.role == 'admin') || (site.user.id == $rootScope.current_user.id)) {
-					site.pages.forEach(function(site_page) {
-						if (site_page.id == $stateParams.page_id) {
-							console.log("TRUE");
-							authorized = true;
-							return;
-						}
-					})
-				}
-			}
-			if (!authorized) {
-				$state.go('main');
-			}
-		})
-	}
-
-
-	$scope.addImage = function() {
-		pages.uploadImage($scope.pimage).success(function(image){
-			$(".image").attr({src: image.url})
-		});
-	}
 };
 
 angular
